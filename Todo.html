@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+                        
+            max-width: 100vw;         
+            overflow-x: hidden;      
+        }
+        
+        
+        ul {
+            list-style-type: none;
+            padding: 0;
+            width: 90%;              /* Limits the width of the list */
+            max-width: 600px;        /* Optional maximum width for readability */
+        }
+        
+        li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 5px;
+            padding: 8px 12px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            word-break: break-word;  /* Allows long words to wrap to the next line */
+            width: 100%;             /* Makes each item take full width of the list */
+            box-sizing: border-box;
+        }
+        
+        button.deleteBtn {
+            margin-left: 10px;
+        }
+       
+        
+    </style>
+</head>
+
+<body>
+    <div>
+        <h1>To Do App</h1>
+        <span>
+            <input id="taskInput" type="text" placeholder="Enter Your Task">
+            <button id="addBtn">Add</button>
+        </span>
+        <ul id="taskList"></ul>
+    </div>
+
+    <script>
+        let input = document.getElementById('taskInput');
+        let addButton = document.getElementById('addBtn');
+        let taskList = document.getElementById('taskList');
+        
+        addButton.addEventListener('click', addTask);
+        input.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') addTask();
+        });
+
+        function addTask() {
+            if (input.value.trim() === '') {
+                alert("Text Box Is Empty");
+                return;
+            }
+
+            // Create a new list item and delete button
+            let li = document.createElement('li');
+            li.textContent = input.value;
+
+            let deleteBtn = document.createElement('button');
+            deleteBtn.innerText = 'Delete';
+            deleteBtn.className = 'deleteBtn';
+
+            li.appendChild(deleteBtn);
+            taskList.appendChild(li);
+
+            input.value = "";
+
+            deleteBtn.addEventListener('click', function() {
+                taskList.removeChild(li);
+            });
+        }
+    </script>
+</body>
+</html>

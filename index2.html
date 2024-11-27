@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Details</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+            width: 100vw;
+            color: aquamarine;
+            background-color: rgb(25, 25, 25);
+        }
+        #postDetails {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .post {
+            box-shadow: 2px 2px 8px rgba(31, 102, 161, 0.3);
+            margin: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: white;
+            color: black;
+            width: 300px;
+            text-align: left;
+        }
+        .post img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+        .like-button, .delete-button {
+            cursor: pointer;
+            color:rgb(8, 1, 1);
+            margin-right: 5px;
+            background-color: white;
+            
+        }
+        .liked {
+            color: green; /* Color when the post is liked */
+        }
+        .comment-section {
+            display: none;
+            margin-top: 10px;
+        }
+        .comment {
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Prinshu Kumar</h1>
+    <div>
+        <h3>Add a New Post</h3>
+        <input type="text" id="newPostImage" placeholder="Image URL" />
+        <button onclick="addNewPost()">Add Post</button>
+    </div>
+    <div id="postDetails"></div>
+
+    
+
+    <script>
+        // Function to add a new post
+        function addNewPost() {
+            const newPostImage = document.getElementById('newPostImage').value;
+            if (newPostImage.trim() !== '') {
+                const postDetails = document.getElementById('postDetails');
+                
+                const postElement = document.createElement('div');
+                postElement.classList.add('post');
+                postElement.innerHTML = `
+                    <img src="${newPostImage.trim()}" alt="Post Image" />
+                    <p>
+                        <span class="like-button">💕</span> Likes: <span class="like-count">0</span>
+                        <button class="view-comments-button">View Comments</button>
+                        <span class="delete-button"> 🗑</span>
+                    </p>
+                    <div class="comment-section">
+                        <h4>Comments:</h4>
+                        <input type="text" class="comment-input" placeholder="Add a comment" />
+                        <button class="comment-button">Comment</button>
+                    </div>
+                `;
+                
+                // Append the new post to the post details container
+                postDetails.appendChild(postElement);
+
+                // Add event listener for the delete button to remove the post
+                const deleteButton = postElement.querySelector('.delete-button');
+                deleteButton.addEventListener('click', () => {
+                    postElement.remove();
+                });
+
+                // Allow delete with "Enter" key when the delete button is focused
+                deleteButton.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        postElement.remove();
+                    }
+                });
+
+                // Add event listener for the like button
+                const likeButton = postElement.querySelector('.like-button');
+                const likeCount = postElement.querySelector('.like-count');
+                likeButton.addEventListener('click', () => {
+                    let likes = parseInt(likeCount.textContent) || 0;
+                    likes += likeButton.classList.contains('liked') ? -1 : 1; // Toggle like state
+                    likeCount.textContent = likes;
+                    likeButton.classList.toggle('liked');  // Toggle the like button color
+                });
+
+                // Add event listener for the "View Comments" button to toggle the comment section
+                const viewCommentsButton = postElement.querySelector('.view-comments-button');
+                const commentSection = postElement.querySelector('.comment-section');
+                viewCommentsButton.addEventListener('click', () => {
+                    commentSection.style.display = commentSection.style.display === 'block' ? 'none' : 'block';
+                });
+
+                // Add event listener for the comment button
+                const commentButton = postElement.querySelector('.comment-button');
+                const commentInput = postElement.querySelector('.comment-input');
+                commentButton.addEventListener('click', () => {
+                    addComment(postElement, commentInput);
+                });
+
+                // Allow pressing "Enter" to add comment
+                commentInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        addComment(postElement, commentInput);
+                    }
+                });
+            }
+            document.getElementById('newPostImage').value = ''; // Clear the input
+        }
+
+        // Function to add a comment
+        function addComment(postElement, commentInput) {
+            if (commentInput.value.trim() !== '') {
+                const newComment = document.createElement('p');
+                newComment.classList.add('comment');
+                newComment.textContent = commentInput.value.trim();
+                postElement.querySelector('.comment-section').appendChild(newComment);
+                commentInput.value = ''; // Clear the comment input
+            }
+        }
+    </script>
+</body>
+</html>

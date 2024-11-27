@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Loop with Numbers (Async/Await)</title>
+    <style>
+        body {
+            text-align: center;
+        }
+        input {
+            border: 2px solid black;
+            color: black;
+            font-family: 'Franklin Gothic Medium';
+            width: 60%;
+            height: 30px;
+            text-align: center;
+        }
+        input:hover {
+            border: 2px solid blue;
+            background-color: lightgray;
+        }
+        div {
+            margin-top: 4%;
+            background-color: rgb(11, 130, 130);
+            color: white;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Event Loop with Numbers (Async/Await)</h1>
+    <input id="in" type="text" placeholder="Enter numbers separated by space">
+    <div>
+        <h1>Output Window</h1>
+        <h2 id="out"></h2>
+    </div>
+    <script>
+      
+        const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+       
+        async function processArray(arr) {
+            const output = document.getElementById('out');
+
+            for (const num of arr) {
+                if (num > 0) { 
+                    output.innerText = num; 
+                    await delay(num * 1000);
+                }
+            }
+
+           
+            output.innerText = 'Done!';
+        }
+
+        const inp = document.getElementById('in');
+        inp.addEventListener('keydown', async (event) => {
+            if (event.key === 'Enter') {
+                const inputValue = inp.value.trim();
+
+                if (!inputValue) {
+                    alert("Please enter some numbers!");
+                    return;
+                }
+
+                
+                const arr = inputValue.split(' ').map(Number);
+
+                if (arr.some(isNaN)) {
+                    alert("Please enter valid numbers only!");
+                    return;
+                }
+
+               
+                await processArray(arr);
+
+               
+                inp.value = '';
+            }
+        });
+    </script>
+</body>
+</html>

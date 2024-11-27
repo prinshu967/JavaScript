@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #e0f7fa;
+            color: #333;
+        }
+        input {
+            width: 200px;
+            padding: 10px;
+            margin: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #0288d1;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0277bd;
+        }
+        .weather-result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Weather App</h1>
+    <input type="text" id="cityInput" placeholder="Enter city name" />
+    <button id="cityWeather">Get Weather by City</button>
+    <button id="currentWeather">Get Weather by Location</button>
+    <div class="weather-result" id="weatherResult"></div>
+
+    <script>
+        const apiKey = "ae953902ff3c621392b37ef3bf379349"; // Replace with your OpenWeatherMap API key
+        const weatherResult = document.getElementById("weatherResult");
+
+        // Function to fetch weather data
+        async function fetchWeather(url) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error("City not found or error fetching location.");
+                }
+                const data = await response.json();
+                displayWeather(data);
+            } catch (error) {
+                weatherResult.textContent = `Error: ${error.message}`;
+            }
+        }
+
+        // Function to display weather data
+        function displayWeather(data) {
+            const { name, main, weather } = data;
+            weatherResult.innerHTML = `
+                <h3>Weather in ${name}</h3>
+                <p>Temperature: ${main.temp}°C</p>
+                <p>Condition: ${weather[0].description}</p>
+                <p>Humidity: ${main.humidity}%</p>
+            `;
+        }
+
+        // Get weather by city name
+        document.getElementById("cityWeather").addEventListener("click", () => {
+            const city = document.getElementById("cityInput").value;
+            if (!city) {
+                weatherResult.textContent = "Please enter a city name.";
+                return;
+            }
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+            fetchWeather(url);
+        });
+
+        // Get weather by current location
+        document.getElementById("currentWeather").addEventListener("click", () => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`;
+                        fetchWeather(url);
+                    },
+                    (error) => {
+                        weatherResult.textContent = `Error: Unable to get location (${error.message}).`;
+                    }
+                );
+            } else {
+                weatherResult.textContent = "Geolocation is not supported by your browser.";
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web API</title>
+    <style>
+        body {
+            text-align: center;
+        }
+        button {
+            width: 200px;
+            height: 50px;
+            border-radius: 10px;
+            color: white;
+            background-color: blueviolet;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        h1 {
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <h1>Understanding the Concept of Web API</h1>
+    <button id="getLocation">Get Your Current Location</button>
+    <h1 id="loc">Your location will appear here</h1>
+</body>
+<script>
+    const loc = document.getElementById('loc');
+    const btn = document.getElementById('getLocation');
+
+    btn.addEventListener('click', async () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    loc.textContent = `Latitude: ${latitude}, Longitude: ${longitude}`;
+                },
+                (error) => {
+                    loc.textContent = `Error: ${error.message}`;
+                }
+            );
+        } else {
+            loc.textContent = "Geolocation is not supported by your browser.";
+        }
+    });
+</script>
+</html>
